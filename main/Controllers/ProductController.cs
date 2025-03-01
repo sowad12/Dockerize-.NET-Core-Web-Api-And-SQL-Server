@@ -24,9 +24,9 @@ namespace main.Controllers
         {
             var list = new List<Product>()
             {
-                new Product() { Name = "Apple iPad", Price = 1000 },
-                new Product() {  Name = "Samsung Smart TV", Price = 1500 },
-                new Product() { Name = "Nokia 130", Price = 1200 }
+                new Product() {  Name = "Mobile", Price = 5000 },
+                new Product() {  Name = "TV", Price = 1700 },
+                new Product() { Name = "Pc", Price = 1900 }
         };
             await _context.AddRangeAsync(list);
             var res = await _context.SaveChangesAsync();
