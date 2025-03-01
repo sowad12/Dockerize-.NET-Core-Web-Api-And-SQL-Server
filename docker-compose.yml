@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  SqlServerDb:
+    container_name: sqlserverdb
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 8002:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=ewww@20230302   
+    volumes:
+      - sqlserver_data:/var/opt/mssql 
+    networks:
+      - myAppNetwork
+
+  main:
+    container_name: webApiContainer
+    image: ${DOCKER_REGISTRY-}dockerintro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserverdb,1433; Database=dockerintro; User Id=sa; Password=ewww@20230302; TrustServerCertificate=True;
+    ports:
+      - 8001:8080
+    build:
+      context: .
+      dockerfile: ./main/Dockerfile
+    depends_on:
+      - SqlServerDb
+    networks:
+      - myAppNetwork
+
+networks:
+  myAppNetwork: 
+
+volumes:
+  sqlserver_data:    
+  
+
