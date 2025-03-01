@@ -5,6 +5,8 @@
 - [Dockerfile](#Dockerfile)
 - [Docker_Compose](#Docker_Compose)
 - [Docker_Repository](#Docker_Repository)
+- [SQL_SERVER_Connection](#SQL_SERVER_Connection)
+- [SQL_SERVER_Connection_Issue](#SQL_SERVER_Connection_Issue)
   
 
 # Requirements
@@ -147,38 +149,104 @@ volumes:
   sqlserver_data:  # Defines a named volume to persist SQL Server data.
 
 ```
-Now in this project directory run this command for Creation of docker images and its api and db container
+Now in this project directory run this command for Creation of respective docker images and containers
 ```cmd
 docker-compose -f docker-compose.yml up -d
 ```
+then got images and containers
+
+![docker-images](https://github.com/user-attachments/assets/4571a7d6-af27-46d2-b73c-101e05498c6a)
+
+![docker-containers](https://github.com/user-attachments/assets/852ec16e-27aa-4fc7-8c5a-9d58b92bb719)
+
 # Docker_Repository
-In this Section some steps need to follow
+For Push this image need to follow some steps 
 
 **Step-1: At first login docker desktop**
 
 **Step-2: Now go the windows powershell or cmd**
 
-Step-2: Run Docker login command for access repository
+**Step-3: Run Docker login command for access repository**
 ```cmd
 docker login
 ```
-Step-3: Create new image tag for push this image
+**Step-4: Create new image tag for push this image(use account name ensuring the image is associated with your account and to avoid naming conflicts.)**
 
-```docker tag dockerintro:latest <account name>/<anyname>:<tag>``` 
+```docker tag <target image name>:<tag> <account name>/<anyname for latest image>:<tag>``` 
 
 My Host machine:
 ```cmd
 docker tag dockerintro:latest sowad/dockerintro:1.0
 ```
 
-Step-4: At last push newly tagged image to the repository
+**Step-5: At last push newly tagged image to the repository**
 
-```docker push <newly tagged image name:tag>``` 
+```docker push <newly tagged image name>:<tag>``` 
 
 My Host machine:
 ```cmd
 docker tag dockerintro:latest dockerintro:1.0
 ```
+
+![dockerRepo](https://github.com/user-attachments/assets/22eacd01-bdca-4e39-98d8-7f5ef8b20024)
+
+For pulling image:
+
+```cmd
+docker push <acc_name>/<image_name>:<tagname>
+```
+
+# SQL_SERVER_Connection
+In this demo mssql server Port Mapping is 8002:1433 where
+- **8002 (Host Machine Port):** The port on your local machine where you can access the SQL Server container.  
+- **1433 (Container Port):** The default port SQL Server uses inside the container.
+
+For MS SQL Server, we need to define two connection strings: one for use outside Docker and another for use inside Docker.
+  
+**Outside Docker (Local Development):** Connection Between Host Machine and SQL Server Container.
+
+**In appsettings.json:**
+
+ ```"Server=localhost,<host port>; Database=<databse name>; User Id=sa; Password=<password>; TrustServerCertificate=True;"```
+ 
+ My Host machine:
+```json
+   "ConnectionStrings": {
+       "DefaultConnection": "Server=localhost,8002; Database=dockerintro; User Id=sa; Password=ewww@20230302; TrustServerCertificate=True;"
+  }
+```
+**Inside Docker:** services within the same Docker network communicate via container names.In this way mssql server connection works inside docker
+
+**In docker-compose.yml:**
+
+Server=<mssql_container_name>,1433; Database=<databse_name>; User Id=sa; Password=<password>; TrustServerCertificate=True;
+
+For my setup, I use:
+```yml
+  environment:
+   - ConnectionStrings__DefaultConnection=Server=sqlserverdb,1433; Database=dockerintro; User Id=sa; Password=ewww@20230302; TrustServerCertificate=True;
+```
+
+**Mssql Server Connection check wtih container:**
+
+Before testing the connection, first start the MSSQL Server container if it is stopped.
+
+![mssqlServerConnection](https://github.com/user-attachments/assets/6cd1c489-6111-44e6-9535-0e1d4d740549)
+
+# SQL_SERVER_Connection_Issue
+
+If you face tcp or network related issue.open Sql server configuration management.Then enable TCP/IP
+
+![tcpconnection](https://github.com/user-attachments/assets/9c56d1a3-d686-4f02-8b5c-3f08dcba0186)
+
+Then Click windows+R write services.msc 
+
+![msc](https://github.com/user-attachments/assets/b83efcb7-92d2-4815-a429-12ecb605918c)
+
+After this it's better restart your pc.
+
+If this solution does not work, try inspecting the MSSQL Server container to check if there is any issue with the Dockerfile or docker-compose.yml.
+
 
 
 
