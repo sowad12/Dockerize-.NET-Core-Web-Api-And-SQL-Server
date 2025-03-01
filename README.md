@@ -20,6 +20,8 @@ I containerized a .NET Core Web API and Microsoft SQL Server 2022 using Docker C
 
 I created a simple Web API with two API endpoints. One retrieves all data from the database, and the other seeds (inserts) data.
 
+![swagger-api](https://github.com/user-attachments/assets/01831d8f-3c30-40b9-8d1c-9d4e1cbaa18f)
+
 # Dockerfile
 When creating a Web API with 'Enable Container Support' selected, Visual Studio automatically generates a Dockerfile containing the necessary instructions to build your image.
 
