@@ -181,6 +181,8 @@ My Host machine:
 docker tag dockerintro:latest sowad/dockerintro:1.0
 ```
 
+![newlyTag](https://github.com/user-attachments/assets/a2e3a849-9cca-4ade-93d7-11da7404be59)
+
 **Step-5: At last push newly tagged image to the repository**
 
 ```docker push <newly tagged image name>:<tag>``` 
